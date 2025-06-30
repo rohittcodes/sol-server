@@ -52,6 +52,27 @@ pub struct SignMessageResponse {
     pub message: String,
 }
 
+#[derive(Deserialize)]
+pub struct VerifyMessageRequest {
+    pub message: String,
+    pub signature: String,
+    pub pubkey: String,
+}
+
+#[derive(Serialize)]
+pub struct VerifyMessageResponse {
+    pub valid: bool,
+    pub message: String,
+    pub pubkey: String,
+}
+
+#[derive(Deserialize)]
+pub struct SendSolRequest {
+    pub from: String,
+    pub to: String,
+    pub lamports: u64,
+}
+
 #[derive(Serialize)]
 pub struct InstructionResponse {
     pub program_id: String,
