@@ -24,12 +24,32 @@ pub struct KeypairResponse {
     pub secret: String,
 }
 
-// ← Add these new types
 #[derive(Deserialize)]
 pub struct CreateTokenRequest {
     pub mint_authority: String,
     pub mint: String,
     pub decimals: u8,
+}
+
+#[derive(Deserialize)]
+pub struct MintTokenRequest {
+    pub mint: String,
+    pub destination: String,
+    pub authority: String,
+    pub amount: u64,
+}
+
+#[derive(Deserialize)]
+pub struct SignMessageRequest {
+    pub message: String,
+    pub secret: String,
+}
+
+#[derive(Serialize)]
+pub struct SignMessageResponse {
+    pub signature: String,
+    pub public_key: String,
+    pub message: String,
 }
 
 #[derive(Serialize)]
