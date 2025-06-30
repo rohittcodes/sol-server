@@ -72,6 +72,14 @@ pub struct SendSolRequest {
     pub to: String,
     pub lamports: u64,
 }
+ 
+#[derive(Deserialize)]
+pub struct SendTokenRequest {
+    pub destination: String,
+    pub mint: String,
+    pub owner: String,
+    pub amount: u64,
+}
 
 #[derive(Serialize)]
 pub struct InstructionResponse {

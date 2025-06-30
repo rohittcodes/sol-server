@@ -134,3 +134,30 @@ pub async fn send_sol(Json(req): Json<SendSolRequest>) -> JsonResponse<ApiRespon
         instruction_data: base64::engine::general_purpose::STANDARD.encode(&instruction.data),
     }))
 }
+
+pub async fn send_token(Json(req): Json<SendTokenRequest>) -> JsonResponse<ApiResponse<InstructionResponse>> {
+    let destination = match Pubkey::from_str(&req.destination) {
+        Ok(pk) => pk,
+        Err(_) => return JsonResponse(ApiResponse::error("Invalid destination address")),
+    };
+    let _mint = match Pubkey::from_str(&req.mint) {
+        Ok(pk) => pk,
+        Err(_) => return JsonResponse(ApiResponse::error("Invalid mint address")),
+    };
+    let owner = match Pubkey::from_str(&req.owner) {
+        Ok(pk) => pk,
+        Err(_) => return JsonResponse(ApiResponse::error("Invalid owner address")),
+    };
+    if req.amount == 0 {
+        return JsonResponse(ApiResponse::error("Amount must be greater than 0"));
+    }
+    let instruction = token_instruction::transfer(
+        &spl_token::id(), &owner, &destination, &owner, &[], req.amount
+    ).unwrap();
+    let accounts = instruction.accounts.iter().map(AccountMeta::from).collect();
+    JsonResponse(ApiResponse::success(InstructionResponse {
+        program_id: instruction.program_id.to_string(),
+        accounts,
+        instruction_data: base64::engine::general_purpose::STANDARD.encode(&instruction.data),
+    }))
+}
