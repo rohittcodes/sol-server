@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct ApiResponse<T> {
@@ -22,4 +22,36 @@ impl<T> ApiResponse<T> {
 pub struct KeypairResponse {
     pub pubkey: String,
     pub secret: String,
+}
+
+// ← Add these new types
+#[derive(Deserialize)]
+pub struct CreateTokenRequest {
+    pub mint_authority: String,
+    pub mint: String,
+    pub decimals: u8,
+}
+
+#[derive(Serialize)]
+pub struct InstructionResponse {
+    pub program_id: String,
+    pub accounts: Vec<AccountMeta>,
+    pub instruction_data: String,
+}
+
+#[derive(Serialize)]
+pub struct AccountMeta {
+    pub pubkey: String,
+    pub is_signer: bool,
+    pub is_writable: bool,
+}
+
+impl From<&solana_sdk::instruction::AccountMeta> for AccountMeta {
+    fn from(acc: &solana_sdk::instruction::AccountMeta) -> Self {
+        Self {
+            pubkey: acc.pubkey.to_string(),
+            is_signer: acc.is_signer,
+            is_writable: acc.is_writable,
+        }
+    }
 }
